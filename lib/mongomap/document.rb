@@ -23,9 +23,14 @@ module Mongomap
     module ClassMethods
       def field(name, options = {})
       end
+
       def first
         Person.new collection.first
       end
+      def last
+        Person.new collection.last
+      end
+
       def collection
         unless defined? @@collection
           @@collection = {}
