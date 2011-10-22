@@ -7,10 +7,9 @@ group :development, :test do
   gem "rcov", ">= 0"
   gem "rspec", ">= 0"
   gem 'rails'
-  gem 'awesome_print'
 end
 gem 'mongo'
 gem 'bson'
 gem 'bson_ext'
-gem 'goling', :path => '../goling'
-gem 'morel', :path => '../morel'
+gem 'linguify'
+gem 'morel'
