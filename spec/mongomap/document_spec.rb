@@ -4,31 +4,25 @@ require 'spec_helper'
 
 describe Mongomap::Document do
 
-  it 'should get the first document' do
+  before do
     Person.delete_all
-
     p = Person.new :name => 'Patrick'
     p.save!
     p = Person.new :name => 'John'
     p.save!
+    p = Person.new :name => 'Doe'
+    p.save!
+  end
 
+  it 'should get the first document' do
     Person.first.name.should == 'Patrick'
   end
 
   it 'should get the last document' do
-    Person.delete_all
-
-    p = Person.new :name => 'Patrick'
-    p.save!
-    p = Person.new :name => 'John'
-    p.save!
-
-    Person.last.name.should == 'John'
+    Person.last.name.should == 'Doe'
   end
 
   it 'should serialize' do
-    Person.delete_all
-
     p = Person.new :name => 'Patrick'
     p.to_json.should == "{\"person\":{\"name\":\"Patrick\"}}"
     p.save!
@@ -40,22 +34,15 @@ describe Mongomap::Document do
   end
 
   it 'should execute server-side queries' do
-    Person.delete_all
-
-    p = Person.new :name => 'Harry'
-    p.save!
-    p = Person.new :name => 'Patrick'
-    p.save!
-    p = Person.new :name => 'John'
-    p.save!
-
-    res = Person.find do
-      if this[:name] == 'Patrick'
+    people = Person.find(:query => lambda{
+      if this[:name] == 'John'
         emit(this[:_id],this)
       end
+    }) do |person|
+      person
     end
-    res.size.should == 1
-    res.first.name.should == "Patrick"
+    people.size.should == 1
+    people.first.name.should == 'John'
   end
 
 end

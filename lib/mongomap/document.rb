@@ -36,10 +36,11 @@ module Mongomap
         Person.new collection.last
       end
 
-      def find(&block)
+      def find(args,&block)
         res = []
-        collection.find(block) do |doc|
+        collection.find(args) do |doc|
           res << Person.new(doc['value'])
+          yield res.last
         end
         res
       end
