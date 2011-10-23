@@ -25,11 +25,23 @@ module Mongomap
       def field(name, options = {})
       end
 
+      def delete_all
+        collection.delete
+      end
+
       def first
         Person.new collection.first
       end
       def last
         Person.new collection.last
+      end
+
+      def find(&block)
+        res = []
+        collection.find(block) do |doc|
+          res << Person.new(doc['value'])
+        end
+        res
       end
 
       def collection
