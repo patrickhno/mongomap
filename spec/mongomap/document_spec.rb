@@ -22,4 +22,16 @@ describe Mongomap::Document do
     Person.last.name.should == 'John'
   end
 
+  it 'should serialize' do
+    p = Person.new :name => 'Patrick'
+    p.to_json.should == "{\"person\":{\"name\":\"Patrick\"}}"
+    p.save!
+
+    needle = "{\"person\":{\"_id\":{\"$oid\":\"#{p._id}\"},\"name\":\"Patrick\"}}"
+
+    p.to_json.should == needle
+
+    Person.last.to_json.should == needle
+  end
+
 end

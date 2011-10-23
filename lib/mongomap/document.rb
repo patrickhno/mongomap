@@ -5,6 +5,7 @@ module Mongomap
   module Document
     
     attr_writer :new_record
+    attr_reader :attributes
     
     extend ActiveSupport::Concern
     
@@ -49,12 +50,12 @@ Morel::Collection.db = db
       else
         raise "unsupported"
       end
-      @fields = options
+      @attributes = options
 
       # define getter methods for all the fields in the document
       options.keys.each do |key|
         self.class.send(:define_method,key) do
-          @fields[key]
+          @attributes[key]
         end
       end
     end
@@ -64,9 +65,13 @@ Morel::Collection.db = db
     end
     
     def insert
-      self.class.collection.insert @fields
+      @attributes[:_id] = self.class.collection.insert @attributes
+      # TODO: _id may be defined (if set with the constructor)
+      self.class.send(:define_method,:_id) do
+        @attributes[:_id]
+      end
     end
-    
+
     def save!
       if new_record?
         insert
