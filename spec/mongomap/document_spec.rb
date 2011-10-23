@@ -34,12 +34,10 @@ describe Mongomap::Document do
   end
 
   it 'should execute server-side queries' do
-    people = Person.find(:query => lambda{
+    people = Person.find do
       if this[:name] == 'John'
         emit(this[:_id],this)
       end
-    }) do |person|
-      person
     end
     people.size.should == 1
     people.first.name.should == 'John'
